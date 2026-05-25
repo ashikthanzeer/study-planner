@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Study Planner + Pomodoro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Today&apos;s study desk</p>
+        <h1>Study Planner + Pomodoro</h1>
+      </div>
+      <div class="controls">
+        <button id="settingsBtn" type="button" aria-label="Open timer settings">Settings</button>
+      </div>
+    </header>
+
+    <section class="summary-grid" aria-label="Study progress summary">
+      <article class="summary-card">
+        <span class="summary-label">Studied Today</span>
+        <strong id="todayStudyTime">0m</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Daily Goal</span>
+        <strong id="goalProgress">0%</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">This Week</span>
+        <strong id="weekStudyTime">0m</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Study Streak</span>
+        <strong id="streakCount">0 days</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Open Tasks</span>
+        <strong id="openTaskCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Due Today</span>
+        <strong id="dueTodayCount">0</strong>
+      </article>
+    </section>
+
+    <section class="dashboard-grid" aria-label="Study analytics">
+      <article class="dashboard-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Subject Progress</h2>
+            <p>Hours studied and tasks completed by subject.</p>
+          </div>
+        </div>
+        <div id="subjectProgressList" class="progress-list"></div>
+      </article>
+
+      <article class="dashboard-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Weekly Study</h2>
+            <p>Minutes studied over the last seven days.</p>
+          </div>
+        </div>
+        <div id="weeklyChart" class="bar-chart"></div>
+      </article>
+
+      <article class="dashboard-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Goals & Exams</h2>
+            <p>Daily target and upcoming exam dates.</p>
+          </div>
+        </div>
+        <form id="goalForm" class="goal-form">
+          <label>Daily study goal
+            <input id="dailyGoalInput" type="number" min="15" step="15" value="120">
+          </label>
+          <button type="submit">Save Goal</button>
+        </form>
+        <form id="examForm" class="exam-form">
+          <input id="examName" placeholder="Exam or goal name" autocomplete="off">
+          <select id="examSubject" aria-label="Exam subject"></select>
+          <input id="examDate" type="date" aria-label="Exam date">
+          <button type="submit">Add Exam</button>
+        </form>
+        <ul id="examList" class="compact-list"></ul>
+      </article>
+    </section>
+
+    <main>
+      <section class="planner-panel" aria-label="Subject and task planner">
+        <div class="panel-heading">
+          <div>
+            <h2>Subjects</h2>
+            <p>Group tasks by class, exam, or topic.</p>
+          </div>
+        </div>
+
+        <form id="subjectForm" class="subject-form">
+          <input id="subjectName" maxlength="40" placeholder="Add subject" autocomplete="off" />
+          <input id="subjectColor" type="color" value="#2563eb" aria-label="Subject color" />
+          <button type="submit">Add</button>
+        </form>
+
+        <div id="subjectTabs" class="subject-tabs" aria-label="Subject filters"></div>
+        <div id="subjectActions" class="subject-actions hidden">
+          <span id="selectedSubjectLabel"></span>
+          <button id="deleteSubjectBtn" type="button">Delete Subject</button>
+        </div>
+
+        <div class="panel-heading task-heading">
+          <div>
+            <h2>Tasks</h2>
+            <p id="taskScopeLabel">All subjects</p>
+          </div>
+          <select id="statusFilter" aria-label="Filter tasks by status">
+            <option value="open">Open</option>
+            <option value="all">All</option>
+            <option value="done">Completed</option>
+          </select>
+        </div>
+
+        <form id="taskForm" class="add-task">
+          <input id="taskTitle" placeholder="Task title" autocomplete="off" />
+          <select id="taskSubject" aria-label="Subject"></select>
+          <input id="taskEstimate" type="number" min="1" max="30" placeholder="Pomodoros" />
+          <input id="taskDue" type="date" aria-label="Due date" />
+          <select id="taskPriority" aria-label="Priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+          <select id="taskExam" aria-label="Related exam">
+            <option value="">No exam</option>
+          </select>
+          <textarea id="taskNotes" rows="2" placeholder="Notes, doubts, links, formulas"></textarea>
+          <button id="addTaskBtn" type="submit">Add Task</button>
+        </form>
+
+        <ul id="taskList" class="task-list"></ul>
+        <p id="emptyState" class="empty-state hidden">No tasks here yet.</p>
+      </section>
+
+      <aside class="timer-column" aria-label="Pomodoro timer and planning tools">
+        <section class="timer-card">
+          <span id="currentSubject" class="subject-pill muted-pill">No subject</span>
+          <h2 id="currentTask">No task selected</h2>
+          <div id="timerDisplay" class="timer">25:00</div>
+          <div class="timer-controls">
+            <button id="startPauseBtn" type="button">Start</button>
+            <button id="skipBtn" type="button">Skip</button>
+            <button id="resetBtn" type="button">Reset</button>
+          </div>
+          <div class="session-info">
+            <span>Mode <strong id="modeLabel">Work</strong></span>
+            <span>Pomodoros <strong id="pomodoroCount">0</strong></span>
+          </div>
+        </section>
+
+        <section class="side-panel">
+          <h3>Schedule</h3>
+          <form id="scheduleForm" class="schedule-form">
+            <input id="scheduleTitle" placeholder="Study block" autocomplete="off">
+            <select id="scheduleSubject" aria-label="Schedule subject"></select>
+            <input id="scheduleDate" type="date" aria-label="Schedule date">
+            <input id="scheduleStart" type="time" aria-label="Start time">
+            <input id="scheduleMinutes" type="number" min="15" step="15" placeholder="Minutes">
+            <button type="submit">Add Block</button>
+          </form>
+          <ul id="scheduleList" class="compact-list"></ul>
+        </section>
+
+        <section class="history">
+          <h3>Completed Sessions</h3>
+          <ul id="historyList"></ul>
+        </section>
+      </aside>
+    </main>
+
+    <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-content">
+        <h3 id="settingsTitle">Timer Settings</h3>
+        <label>Work minutes <input id="workInput" type="number" min="1" value="25"></label>
+        <label>Short break <input id="shortInput" type="number" min="1" value="5"></label>
+        <label>Long break <input id="longInput" type="number" min="1" value="15"></label>
+        <label>Cycles before long break <input id="cyclesInput" type="number" min="1" value="4"></label>
+        <div class="modal-actions">
+          <button id="saveSettings" type="button">Save</button>
+          <button id="closeSettings" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
